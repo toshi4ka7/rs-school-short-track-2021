@@ -20,8 +20,36 @@
  * }
  *
  */
-function getDNSStats(/* domains */) {
-  throw new Error('Not implemented');
+function getDNSStats(domains) {
+  const dns = {};
+  if (!domains) return dns;
+
+  function parserDomains(url) {
+    const res = [];
+    const lastdns = url
+      .split('.')
+      .reverse()
+      .reduce((acum, curr) => {
+        res.push(`.${acum}`);
+        return `${acum}.${curr}`;
+      });
+    res.push(`.${lastdns}`);
+
+    return res;
+  }
+
+  domains.forEach((doman) => {
+    const parse = parserDomains(doman);
+    parse.forEach((item) => {
+      if (dns[item] === undefined) {
+        dns[item] = 1;
+      } else {
+        dns[item] += 1;
+      }
+    });
+  });
+
+  return dns;
 }
 
 module.exports = getDNSStats;
